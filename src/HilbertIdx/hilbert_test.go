@@ -85,8 +85,18 @@ func TestSubCubeTransform(t *testing.T) {
 }
 
 func TestHilbertIndex(t *testing.T) {
-	res := HilbertIdx(3, 3, &Point3{ 0, 1, 0})
-	fmt.Println(res)
+	var max uint = 4
+	var bits uint = 2
+	for x:= uint(0); x < max; x++ {
+		for y := uint(0); y < max; y++ {
+			for z := uint(0); z < max; z++ {
+				res := HilbertIdx(3, bits, &Point3{x, y, z})
+				fmt.Printf("(%d, %d, %d) => %d\n\n", x, y, z, res)
+			}
+		}
+	}
+	// res := HilbertIdx(3, 3, &Point3{ 7, 7, 7})
+	// fmt.Println(res)
 }
 
 

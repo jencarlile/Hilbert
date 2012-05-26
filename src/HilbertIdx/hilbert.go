@@ -77,23 +77,113 @@ type Point3 struct {
 }
 
 func HilbertIdx(n, m uint, p *Point3) uint {
+	// n = dimension
+	// m = num bits
 	var h, e, d uint = 0, 0, 0
-	var l uint
+	//var l uint
+
+	//fmt.Printf("x: %03b, y: %03b, z: %03b\n", p.X, p.Y, p.Z)
 
 	for i := int(m-1); i>=0; i-- {
-		l = p.Z & uint(math.Pow(2, float64(i))) 
-		l <<= 1
-		l |= p.Y & uint(math.Pow(2, float64(i)))
-		l <<= 1
-		l |= p.X & uint(math.Pow(2, float64(i)))
+		var l uint
+		var mask uint = uint(math.Pow(2, float64(i)))
+		//fmt.Printf("Mask: %03b\n", mask)
+		bz := p.Z & mask
+		bz >>= uint(i)
+		//fmt.Printf("bz: %03b\n", bz)
+		l |= bz << 2
+		//fmt.Printf("l: %03b\n", l)
 
-		fmt.Printf("i: %v, l: %08b\n", i, l)
+		by := p.Y & mask
+		by >>= uint(i)
+		//fmt.Printf("by: %03b\n", by)
+		l |= by << 1
+		//fmt.Printf("l: %03b\n", l)
 
+		bx := p.X & mask
+		bx >>= uint(i)
+		//fmt.Printf("bx: %03b\n", bx)
+		l |= bx
+		//fmt.Printf("l: %03b\n", l)
+		fmt.Printf("i: %v, l: %03b\n", i, l)
+
+		l = SubCubeTransform(l, e, d)
+		fmt.Printf("SubCubeTransform: %03b\n", l)
+
+		w := GrayCodeInverse(l)
+		fmt.Printf("GCI: %v\n", w)
+
+		e = e ^ RRot(Entry(w, n), d+1, m)
+		d = d + Direction(w, n) + 1%n
+		h = (h << n) | w
 	}
 
-	fmt.Println(h, e, d)
-	return 0
+	//fmt.Println(h, e, d)
+	return h
 }
+
+
+// func HilbertIdxInverse(n, m, h uint) Point3 {
+// 	var e, d uint = 0, 0
+// 	var p Point3{0, 0, 0} //??
+
+// 	for i = int(m-1); i>=0; i-- {
+
+// 		// w := [ bit(h, i*n + n-1) ... bit(h, i*n)]  n is dim, m is numbits, max h is 2^mn
+// 		l := GrayCode(w)
+// 		// l = Inverse SubCubeTransform(l)
+// 		for j := 0; j<n; j++ {
+// 			//bit(p-subj, i) = bit(l, j)
+// 		}
+// 		// ALT
+// 		// bit(p.X, i) = bit(l, 0);
+// 		// bit(p.Y, i) = bit(l, 1);
+// 		// bit(p.Z, i) = bit(l, 2);
+
+// 		e = e ^ (RRot(Entry(w, n), d+1, m))
+// 		d = d + Direction(w) + 1%n
+
+// 	}
+
+// 	return p
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
