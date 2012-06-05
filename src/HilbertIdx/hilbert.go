@@ -24,7 +24,7 @@ func Direction(i, n uint) uint {
 	if (float64(i) > math.Pow(2, float64(n)) - 1) || (i < 0) {
 		panic("input out of range")
 	}
-
+	
 	switch {
 	case i == 0: 
 		return 0
@@ -49,9 +49,9 @@ func Entry(i, n uint) uint {
 	return 0
 }
 
-func SubCubeTransform(in, e, d uint) uint {
+func SubCubeTransform(in, e, d, numbits uint) uint {
 	inxore := in ^ e
-	res := RRot(inxore, d + 1, 2)
+	res := RRot(inxore, d + 1, numbits)
 	return res
 }
 
@@ -60,6 +60,19 @@ func RRot(in, rot, numbits uint) uint {
 	// MOD rot amt by numbits?
 	res := (in >> rot) | (in << (numbits - rot)) 
 	
+	var mask uint = 0
+	var i uint
+	for i = 0; i < numbits; i++ {
+		mask = mask << 1
+		mask |= 1
+	}
+	return res & mask
+}
+
+func LRot(in, rot, numbits uint) uint {		
+	// MOD rot amt by numbits?
+	res := (in << rot) | (in >> (numbits - rot))
+
 	var mask uint = 0
 	var i uint
 	for i = 0; i < numbits; i++ {
@@ -105,16 +118,16 @@ func HilbertIdx(n, m uint, p *Point3) uint {
 		//fmt.Printf("bx: %03b\n", bx)
 		l |= bx
 		//fmt.Printf("l: %03b\n", l)
-		fmt.Printf("i: %v, l: %03b\n", i, l)
+		//fmt.Printf("i: %v, l: %03b\n", i, l)
 
-		l = SubCubeTransform(l, e, d)
-		fmt.Printf("SubCubeTransform: %03b\n", l)
+		l = SubCubeTransform(l, e, d, n) // ? 3 or n? or m?
+		//fmt.Printf("SubCubeTransform: %03b\n", l)
 
 		w := GrayCodeInverse(l)
-		fmt.Printf("GCI: %v\n", w)
+		fmt.Printf("GCI %v: %v\n", l, w)
 
-		e = e ^ RRot(Entry(w, n), d+1, m)
-		d = d + Direction(w, n) + 1%n
+		e = e ^ LRot(Entry(w, n), d+1, m)
+		d = d + Direction(w, n) + 1%n //uint(i)%n //1%n ??????????!!!!!
 		h = (h << n) | w
 	}
 

@@ -49,8 +49,8 @@ func TestEntryN3(t *testing.T) {
 }
 
 func TestEntryN2(t *testing.T) {
-	for i := uint(0); i < 4; i++ {
-		fmt.Printf("Entry(%d): %02b\n", i, Entry(i, 2))
+	for i := uint(0); i < 8; i++ {
+		fmt.Printf("Entry(%d): %03b\n", i, Entry(i, 3))
 	}
 } 
 
@@ -72,14 +72,32 @@ func TestRRot(t *testing.T) {
 	}
 }
 
+func TestLRot(t *testing.T) {
+	var numbits uint = 3
+	var i uint
+	for i = 0; i < 8; i++ {
+		fmt.Printf("%03b : %03b : %03b : %03b\n", i, LRot(i, 1, numbits), LRot(i, 2, numbits), LRot(i, 3, numbits))
+	}
+
+	numbits = 4
+	for i = 0; i < 15; i++ {
+		fmt.Printf("%04b : %04b : %04b : %04b : %04b\n", i, LRot(i, 1, numbits), LRot(i, 2, numbits), LRot(i, 3, numbits), LRot(i, 4, numbits))	
+	}
+
+	const in, out = 4, 2
+	if x := LRot(in, 2, 3); x != out {
+		t.Errorf("LRot(%v) = %v, want %v", in, x, out)
+	}
+}
+
 func TestSubCubeTransform(t *testing.T) {
-	res := SubCubeTransform(1, 3, 0)
+	res := SubCubeTransform(1, 3, 0, 2)
 	fmt.Println("SubCubeTransform(1): ", res)
 
-	res = SubCubeTransform(2, 3, 0)
+	res = SubCubeTransform(2, 3, 0, 2)
 	fmt.Println("SubCubeTransform(2): ", res)
 
-	res = SubCubeTransform(3, 0, 1)
+	res = SubCubeTransform(3, 0, 1, 2)
 	fmt.Println("SubCubeTransform(3): ", res)
 
 }
@@ -91,7 +109,7 @@ func TestHilbertIndex(t *testing.T) {
 		for y := uint(0); y < max; y++ {
 			for z := uint(0); z < max; z++ {
 				res := HilbertIdx(3, bits, &Point3{x, y, z})
-				fmt.Printf("(%d, %d, %d) => %d\n\n", x, y, z, res)
+				fmt.Printf("(%d, %d, %d) => %d\n", x, y, z, res)
 			}
 		}
 	}
